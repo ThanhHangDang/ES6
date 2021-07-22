@@ -1,4 +1,16 @@
+import { API_URL } from "../../config/constant.js";
+
+
 export default class ListFood{
+
+    callApi(uri, method, data){
+        return axios({
+            url: API_URL + uri,
+            method,
+            data, 
+        });
+    }
+
     addFoodApi(data){
         return axios({
             url: "https://60e9fcc55dd7ff0017b3972e.mockapi.io/api/Food",

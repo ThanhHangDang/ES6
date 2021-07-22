@@ -48,7 +48,7 @@ const renderTable = (arr) => {
 }
 
 const fetchData = () => {
-    listFood.getListFoodApi()
+    listFood.callApi("Food", "GET", null)
         .then((result) => {
             getEle("tbodyFood").innerHTML = renderTable(result.data);
         })
@@ -85,7 +85,7 @@ const themMonAn = () => {
 
     food.tinhGiaKhuyenMai();
 
-    listFood.addFoodApi(food)
+    listFood.callApi("Food", "POST", food)
         .then((result) => {
             alert("Add success!");
             document.getElementsByClassName("close")[0].click();
@@ -108,7 +108,7 @@ const suaMonAn = (id) => {
     const footer = `<button type="button" class="btn btn-success" onclick="capNhatMonAn(${id})">Cập nhật</button>`;
     document.getElementsByClassName("modal-footer")[0].innerHTML = footer;
 
-    listFood.getFoodById(id)
+    listFood.callApi(`Food/${id}`, "GET", null)
         .then((result) => {
             //Show value ra các thẻ input
             getEle("foodID").value = result.data.id;
@@ -154,7 +154,7 @@ const capNhatMonAn = (id) => {
 window.capNhatMonAn = capNhatMonAn;
 
 const xoaMonAn = (id) => {
-    listFood.deleteFoodApi(id)
+    listFood.callApi(`Food/${id}`, "DELETE", null)
         .then(() => {
             alert("Xoá thành công!!!");
             fetchData();
@@ -174,7 +174,7 @@ getEle("selLoai").addEventListener("change", (event) => {
 
     const type = event.target.value;
     
-    listFood.getListFoodApi()
+    listFood.callApi("Food", "GET", null)
         .then((result) => {
             /**
              * 1. Tạo ra mangTimKiem = []
@@ -188,12 +188,15 @@ getEle("selLoai").addEventListener("change", (event) => {
             if (type === "all"){
                 mangTimkKiem = result.data;
             }
-            
-            result.data.forEach((item) => {
-                if(type === item.loaiMon){
-                    mangTimkKiem.push(item)
-                }
-                getEle("tbodyFood").innerHTML = renderTable(mangTimkKiem);
-            })
+            else{
+                // result.data.forEach((item) => {
+                //     if(type === item.loaiMon){
+                //         mangTimkKiem.push(item)
+                //     }
+                // })
+
+                mangTimkKiem = result.data.filter((item) =>  type === item.loaiMon);
+            }
+            getEle("tbodyFood").innerHTML = renderTable(mangTimkKiem);
         })
 })
